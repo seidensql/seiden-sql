@@ -8,6 +8,9 @@ function getSql() {
   if (!sqlPromise) {
     sqlPromise = initSqlJs({
       locateFile: () => '/sql-wasm.wasm',
+    }).catch(err => {
+      sqlPromise = null; // Reset so next attempt retries
+      throw err;
     });
   }
   return sqlPromise;
