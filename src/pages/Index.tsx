@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useSqlite } from '@/hooks/use-sqlite';
 import { SchemaPanel } from '@/components/sqlite/SchemaPanel';
 import { QueryEditor } from '@/components/sqlite/QueryEditor';
@@ -41,8 +41,6 @@ export default function Index() {
   const [tabs, setTabs] = useState<QueryTab[]>([]);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
   const [results, setResults] = useState<Record<string, QueryResult>>({});
-  const tabsRef = useRef<QueryTab[]>([]);
-  tabsRef.current = tabs;
 
   const [showSchema, setShowSchema] = useState(true);
   const [showHistory, setShowHistory] = useState(false);
@@ -166,13 +164,17 @@ export default function Index() {
     });
   };
 
-  const executeQuery = useCallback(async () => {
+  const executeQuery = async () => {
+    console.log('[executeQuery] activeDbId:', activeDbId, 'activeTabId:', activeTabId);
+    console.log('[executeQuery] tabs:', JSON.stringify(tabs.map(t => ({ id: t.id, sql: t.sql.slice(0, 50) }))));
     if (!activeDbId || !activeTabId) return;
-    const currentTab = tabsRef.current.find(t => t.id === activeTabId);
-    if (!currentTab) return;
+    const currentTab = tabs.find(t => t.id === activeTabId);
+    if (!currentTab) { console.log('[executeQuery] tab not found'); return; }
     const sqlText = currentTab.sql.trim();
-    if (!sqlText) return;
+    if (!sqlText) { console.log('[executeQuery] sql is empty'); return; }
+    console.log('[executeQuery] executing:', sqlText);
     const result = sqlite.execute(sqlText);
+    console.log('[executeQuery] result:', JSON.stringify({ columns: result.columns, rowCount: result.values?.length, error: result.error }));
     setResults(prev => ({ ...prev, [currentTab.id]: result }));
     const entry: QueryHistoryEntry = {
       id: genId(), dbId: activeDbId, sql: sqlText,
@@ -191,7 +193,7 @@ export default function Index() {
         }
       }
     }
-  }, [activeDbId, activeTabId, sqlite, databases]);
+  };
 
   const handleTableClick = (tableName: string) => {
     if (!activeTabId) return;
