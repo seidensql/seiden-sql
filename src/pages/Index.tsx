@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useSqlite } from '@/hooks/use-sqlite';
 import { SchemaPanel } from '@/components/sqlite/SchemaPanel';
 import { QueryEditor } from '@/components/sqlite/QueryEditor';
@@ -41,6 +41,8 @@ export default function Index() {
   const [tabs, setTabs] = useState<QueryTab[]>([]);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
   const [results, setResults] = useState<Record<string, QueryResult>>({});
+  const tabsRef = useRef<QueryTab[]>([]);
+  tabsRef.current = tabs;
 
   const [showSchema, setShowSchema] = useState(true);
   const [showHistory, setShowHistory] = useState(false);
@@ -80,8 +82,7 @@ export default function Index() {
   };
 
   const createNewDatabase = async () => {
-    const name = prompt('Database name:', `db-${databases.length + 1}`);
-    if (!name) return;
+    const name = `db-${databases.length + 1}`;
     await sqlite.openEmpty();
     const data = sqlite.exportData();
     if (!data) return;
@@ -166,18 +167,13 @@ export default function Index() {
   };
 
   const executeQuery = useCallback(async () => {
-    if (!activeDbId) return;
-    // Read current tab sql from state to avoid stale closure
-    let currentTab: QueryTab | undefined;
-    setTabs(prev => {
-      currentTab = prev.find(t => t.id === activeTabId);
-      return prev; // no mutation
-    });
+    if (!activeDbId || !activeTabId) return;
+    const currentTab = tabsRef.current.find(t => t.id === activeTabId);
     if (!currentTab) return;
     const sqlText = currentTab.sql.trim();
     if (!sqlText) return;
     const result = sqlite.execute(sqlText);
-    setResults(prev => ({ ...prev, [currentTab!.id]: result }));
+    setResults(prev => ({ ...prev, [currentTab.id]: result }));
     const entry: QueryHistoryEntry = {
       id: genId(), dbId: activeDbId, sql: sqlText,
       executedAt: Date.now(), rowCount: result.values?.length ?? 0, error: result.error,
@@ -203,8 +199,7 @@ export default function Index() {
   };
 
   const handleSaveQuery = (sqlText: string) => {
-    const name = prompt('Name this query:', sqlText.slice(0, 40));
-    if (!name) return;
+    const name = sqlText.slice(0, 40) || 'Untitled';
     const sq: SavedQuery = { id: genId(), name, sql: sqlText, dbId: activeDbId ?? undefined, createdAt: Date.now() };
     saveQuery(sq).then(refreshHistoryAndSaved);
     toast.success('Query saved');
