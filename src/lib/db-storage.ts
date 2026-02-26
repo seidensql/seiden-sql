@@ -1,7 +1,7 @@
 import { openDB, type IDBPDatabase } from 'idb';
 import type { DatabaseInfo, QueryHistoryEntry, SavedQuery } from './types';
 
-const DB_NAME = 'seiden-sqlite';
+const DB_NAME = 'seiden-sql';
 const DB_VERSION = 1;
 
 let dbPromise: Promise<IDBPDatabase> | null = null;

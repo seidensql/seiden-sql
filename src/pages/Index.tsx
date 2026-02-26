@@ -230,7 +230,7 @@ export default function Index() {
       <header className="flex items-center gap-3 px-4 py-2 border-b border-border bg-card">
         <h1 className="text-sm font-bold tracking-tight text-foreground">
           <Database className="h-4 w-4 inline mr-1.5 -mt-0.5" />
-          SeidenSQLite
+          SeidenSQL
         </h1>
         <div className="flex items-center gap-1 ml-4">
           {databases.map(db => (
@@ -319,7 +319,7 @@ export default function Index() {
               <div className="text-center space-y-4">
                 <Database className="h-12 w-12 mx-auto text-muted-foreground/50" />
                 <div>
-                  <h2 className="text-lg font-semibold text-foreground">SeidenSQLite</h2>
+                  <h2 className="text-lg font-semibold text-foreground">SeidenSQL</h2>
                   <p className="text-sm text-muted-foreground mt-1">A browser-based SQLite client for learning SQL</p>
                 </div>
                 <div className="flex gap-3 justify-center">
