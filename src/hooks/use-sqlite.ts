@@ -39,11 +39,13 @@ export function useSqlite() {
   }, []);
 
   const execute = useCallback((sql: string): QueryResult => {
+    console.log('[execute] dbRef.current:', dbRef.current ? 'set' : 'NULL');
     if (!dbRef.current) {
       return { columns: [], values: [], error: 'No database open', executedAt: Date.now() };
     }
     try {
       const results = dbRef.current.exec(sql);
+      console.log('[execute] sql:', sql, '| results.length:', results.length, '| first result:', JSON.stringify(results[0]));
       if (results.length === 0) {
         // DDL or empty result
         refreshSchema();
@@ -53,6 +55,7 @@ export function useSqlite() {
       refreshSchema();
       return { columns: last.columns, values: last.values, executedAt: Date.now() };
     } catch (e: any) {
+      console.error('[execute] error:', e);
       return { columns: [], values: [], error: e.message ?? String(e), executedAt: Date.now() };
     }
   }, []);
