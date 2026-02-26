@@ -39,7 +39,6 @@ export function useSqlite() {
   }, []);
 
   const execute = useCallback((sql: string): QueryResult => {
-    console.log('[execute] dbRef.current:', dbRef.current ? 'set' : 'NULL');
     if (!dbRef.current) {
       return { columns: [], values: [], error: 'No database open', executedAt: Date.now() };
     }
@@ -59,7 +58,6 @@ export function useSqlite() {
       refreshSchema();
       return { columns, values, executedAt: Date.now() };
     } catch (e: any) {
-      console.error('[execute] error:', e);
       return { columns: [], values: [], error: e.message ?? String(e), executedAt: Date.now() };
     }
   }, []);
