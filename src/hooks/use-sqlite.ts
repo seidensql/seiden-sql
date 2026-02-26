@@ -51,11 +51,11 @@ export function useSqlite() {
         return { columns: [], values: [], executedAt: Date.now() };
       }
       const last = results[results.length - 1];
-      // Capture columns/values into plain JS arrays BEFORE refreshSchema runs,
-      // because sql.js reuses WASM buffers for column names and a subsequent
-      // exec() call (inside refreshSchema) would clobber last.columns.
-      const columns = Array.from(last.columns ?? []);
-      const values = (last.values ?? []).map(row => Array.from(row));
+      // sql.js 1.14 ships minified: the 'columns' property is renamed (e.g. to
+      // 'lc') while 'values' is preserved. Find the columns key dynamically.
+      const colKey = Object.keys(last).find(k => k !== 'values');
+      const columns: string[] = colKey ? [...(last as any)[colKey]] : [];
+      const values = (last.values ?? []).map(row => [...row]);
       refreshSchema();
       return { columns, values, executedAt: Date.now() };
     } catch (e: any) {
