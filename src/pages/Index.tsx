@@ -98,8 +98,11 @@ export default function Index() {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.sqlite,.db,.sqlite3';
-    input.onchange = async () => {
+    input.style.display = 'none';
+    document.body.appendChild(input);
+    input.addEventListener('change', async () => {
       const file = input.files?.[0];
+      document.body.removeChild(input);
       if (!file) return;
       const buf = await file.arrayBuffer();
       const data = new Uint8Array(buf);
@@ -118,7 +121,7 @@ export default function Index() {
       setActiveDbId(db.id);
       setActiveTabId(tab.id);
       toast.success(`Opened "${db.name}"`);
-    };
+    });
     input.click();
   };
 
