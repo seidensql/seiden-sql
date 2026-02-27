@@ -44,9 +44,9 @@ export function useSqlite() {
     }
     try {
       const results = dbRef.current.exec(sql);
+      const isDDL = /^\s*(CREATE|DROP|ALTER)\b/i.test(sql);
+      if (isDDL) refreshSchema();
       if (results.length === 0) {
-        // DDL or empty result
-        refreshSchema();
         return { columns: [], values: [], executedAt: Date.now() };
       }
       const last = results[results.length - 1];
@@ -55,7 +55,6 @@ export function useSqlite() {
       const colKey = Object.keys(last).find(k => k !== 'values');
       const columns: string[] = colKey ? [...(last as any)[colKey]] : [];
       const values = (last.values ?? []).map(row => [...row]);
-      refreshSchema();
       return { columns, values, executedAt: Date.now() };
     } catch (e: any) {
       return { columns: [], values: [], error: e.message ?? String(e), executedAt: Date.now() };
