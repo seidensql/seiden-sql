@@ -275,6 +275,7 @@ export default function Index() {
         <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={uploadDatabase}>
           <Upload className="h-3 w-3 mr-1" /> Open
         </Button>
+        <span className="text-xs text-muted-foreground italic px-2">Because SQL just wants to be friends with you.</span>
         <div className="ml-auto flex items-center gap-1">
           <Button variant="ghost" size="sm" className="h-7" onClick={() => setShowSchema(s => !s)}>
             {showSchema ? <PanelLeftClose className="h-3.5 w-3.5" /> : <PanelLeft className="h-3.5 w-3.5" />}
