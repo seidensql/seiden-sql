@@ -69,19 +69,6 @@ export function ResultsPanel({ result, fontSize = 13, onFontSizeChange }: Result
     toast.success('CSV downloaded');
   };
 
-  const downloadJSON = () => {
-    const data = values.map(row =>
-      Object.fromEntries(columns.map((col, i) => [col, row[i]]))
-    );
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'query-result.json';
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success('JSON downloaded');
-  };
 
   // Chart data: try to find a string column for X and numeric columns for Y
   const numericCols = columns.filter((_, i) =>
@@ -108,9 +95,6 @@ export function ResultsPanel({ result, fontSize = 13, onFontSizeChange }: Result
         </Button>
         <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={downloadCSV}>
           <Download className="h-3 w-3 mr-1" /> CSV
-        </Button>
-        <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={downloadJSON}>
-          <Download className="h-3 w-3 mr-1" /> JSON
         </Button>
         {onFontSizeChange && (
           <>
