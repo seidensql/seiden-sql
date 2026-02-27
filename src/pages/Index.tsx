@@ -344,7 +344,7 @@ export default function Index() {
                 <Database className="h-12 w-12 mx-auto text-muted-foreground/50" />
                 <div>
                   <h2 className="text-lg font-semibold text-foreground">SeidenSQL</h2>
-                  <p className="text-sm text-muted-foreground mt-1">Because SQL just wants to be friends with you.</p>
+                  <p className="text-sm text-muted-foreground mt-1">Locally sourced, artisanal SQL queries. Load a DB to get started.</p>
                 </div>
                 <div className="flex gap-3 justify-center">
                   <Button onClick={createNewDatabase}><Plus className="h-4 w-4 mr-2" /> New Database</Button>
