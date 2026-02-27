@@ -1,7 +1,7 @@
 import { QueryResult } from '@/lib/types';
 import { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { Copy, Download, BarChart3, TableIcon } from 'lucide-react';
+import { Copy, Download, TableIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -122,7 +122,11 @@ export function ResultsPanel({ result, fontSize = 13, onFontSizeChange }: Result
               onClick={() => setView('chart')}
               title="Mind-expander view"
             >
-              <BarChart3 className="h-3 w-3" />
+              <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 10 C5 4 19 4 19 10 C19 15 16 17 12 17 C8 17 5 15 5 10Z" />
+                <path d="M10 17 L9 22 M14 17 L15 22" />
+                <line x1="6" y1="22" x2="18" y2="22" />
+              </svg>
             </Button>
           </>
         )}
