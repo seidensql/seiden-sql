@@ -26,6 +26,7 @@ import {
   PanelLeftClose,
   PanelLeft,
   Clock,
+  Copy,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -318,6 +319,9 @@ export default function Index() {
                 <div className="ml-auto pr-2 flex items-center gap-1">
                   <Button variant="ghost" size="sm" className="h-7 px-2 text-xs font-bold" onClick={() => setFontSize(s => Math.max(10, s - 1))} title="Decrease font size">A-</Button>
                   <Button variant="ghost" size="sm" className="h-7 px-2 text-xs font-bold" onClick={() => setFontSize(s => Math.min(20, s + 1))} title="Increase font size">A+</Button>
+                  <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => { navigator.clipboard.writeText(activeTab?.sql ?? ''); toast.success('Query copied'); }} title="Copy query to clipboard" disabled={!activeTab?.sql.trim()}>
+                    <Copy className="h-3 w-3" />
+                  </Button>
                   <Button size="sm" className="h-7 text-xs" onClick={executeQuery} disabled={!activeTab?.sql.trim()}>
                     <Play className="h-3 w-3 mr-1" /> Run
                   </Button>
