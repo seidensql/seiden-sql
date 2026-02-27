@@ -90,10 +90,10 @@ export function ResultsPanel({ result, fontSize = 13, onFontSizeChange }: Result
         <span className="text-xs text-muted-foreground mr-auto">
           {values.length} row{values.length !== 1 ? 's' : ''}
         </span>
-        <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={copyToClipboard}>
+        <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={copyToClipboard} title="Copy results to clipboard">
           <Copy className="h-3 w-3 mr-1" /> Copy
         </Button>
-        <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={downloadCSV}>
+        <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={downloadCSV} title="Download as CSV">
           <Download className="h-3 w-3 mr-1" /> CSV
         </Button>
         {onFontSizeChange && (
@@ -111,6 +111,7 @@ export function ResultsPanel({ result, fontSize = 13, onFontSizeChange }: Result
               size="sm"
               className="h-7 text-xs"
               onClick={() => setView('table')}
+              title="Table view"
             >
               <TableIcon className="h-3 w-3" />
             </Button>
@@ -119,6 +120,7 @@ export function ResultsPanel({ result, fontSize = 13, onFontSizeChange }: Result
               size="sm"
               className="h-7 text-xs"
               onClick={() => setView('chart')}
+              title="Chart view"
             >
               <BarChart3 className="h-3 w-3" />
             </Button>
