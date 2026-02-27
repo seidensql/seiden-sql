@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { EditorState } from '@codemirror/state';
+import { EditorState, Compartment } from '@codemirror/state';
 import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter } from '@codemirror/view';
 import { sql, SQLite } from '@codemirror/lang-sql';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
@@ -11,11 +11,11 @@ interface QueryEditorProps {
   onChange: (value: string) => void;
   onExecute: () => void;
   error?: string;
+  fontSize?: number;
 }
 
-const lightTheme = EditorView.theme({
+const baseTheme = EditorView.theme({
   '&': {
-    fontSize: '13px',
     height: '100%',
   },
   '.cm-content': {
@@ -41,9 +41,14 @@ const lightTheme = EditorView.theme({
   },
 });
 
-export function QueryEditor({ value, onChange, onExecute, error }: QueryEditorProps) {
+function fontSizeTheme(size: number) {
+  return EditorView.theme({ '&': { fontSize: `${size}px` } });
+}
+
+export function QueryEditor({ value, onChange, onExecute, error, fontSize = 13 }: QueryEditorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
+  const fontSizeCompartment = useRef(new Compartment());
   const onChangeRef = useRef(onChange);
   const onExecuteRef = useRef(onExecute);
   onChangeRef.current = onChange;
@@ -76,7 +81,8 @@ export function QueryEditor({ value, onChange, onExecute, error }: QueryEditorPr
         sql({ dialect: SQLite }),
         syntaxHighlighting(defaultHighlightStyle),
         keymap.of([...defaultKeymap, ...historyKeymap]),
-        lightTheme,
+        baseTheme,
+        fontSizeCompartment.current.of(fontSizeTheme(fontSize)),
         EditorView.updateListener.of(update => {
           if (update.docChanged) {
             onChangeRef.current(update.state.doc.toString());
@@ -94,6 +100,13 @@ export function QueryEditor({ value, onChange, onExecute, error }: QueryEditorPr
       viewRef.current = null;
     };
   }, []);
+
+  // Update font size without reinitializing the editor
+  useEffect(() => {
+    const view = viewRef.current;
+    if (!view) return;
+    view.dispatch({ effects: fontSizeCompartment.current.reconfigure(fontSizeTheme(fontSize)) });
+  }, [fontSize]);
 
   // Sync external value changes
   const setExternally = useCallback((newVal: string) => {

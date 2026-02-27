@@ -7,11 +7,12 @@ import { toast } from 'sonner';
 
 interface ResultsPanelProps {
   result: QueryResult | null;
+  fontSize?: number;
 }
 
 type ViewMode = 'table' | 'chart';
 
-export function ResultsPanel({ result }: ResultsPanelProps) {
+export function ResultsPanel({ result, fontSize = 13 }: ResultsPanelProps) {
   const [view, setView] = useState<ViewMode>('table');
 
   if (!result) {
@@ -136,7 +137,7 @@ export function ResultsPanel({ result }: ResultsPanelProps) {
       {/* Content */}
       <div className="flex-1 overflow-auto">
         {view === 'table' ? (
-          <table className="w-full text-xs">
+          <table className="w-full" style={{ fontSize: `${fontSize}px` }}>
             <thead className="sticky top-0 bg-muted">
               <tr>
                 {columns.map(col => (

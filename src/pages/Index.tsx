@@ -44,6 +44,7 @@ export default function Index() {
 
   const [showSchema, setShowSchema] = useState(true);
   const [showHistory, setShowHistory] = useState(false);
+  const [fontSize, setFontSize] = useState(13);
 
   const [history, setHistoryState] = useState<QueryHistoryEntry[]>([]);
   const [saved, setSaved] = useState<SavedQuery[]>([]);
@@ -314,7 +315,9 @@ export default function Index() {
                 <button onClick={addTab} className="px-2 py-1.5 text-muted-foreground hover:text-foreground transition-colors">
                   <Plus className="h-3 w-3" />
                 </button>
-                <div className="ml-auto pr-2">
+                <div className="ml-auto pr-2 flex items-center gap-1">
+                  <Button variant="ghost" size="sm" className="h-7 px-2 text-xs font-bold" onClick={() => setFontSize(s => Math.max(10, s - 1))} title="Decrease font size">A-</Button>
+                  <Button variant="ghost" size="sm" className="h-7 px-2 text-xs font-bold" onClick={() => setFontSize(s => Math.min(20, s + 1))} title="Increase font size">A+</Button>
                   <Button size="sm" className="h-7 text-xs" onClick={executeQuery} disabled={!activeTab?.sql.trim()}>
                     <Play className="h-3 w-3 mr-1" /> Run
                   </Button>
@@ -322,11 +325,11 @@ export default function Index() {
               </div>
               <div className="h-[40%] min-h-[120px] border-b border-border">
                 {activeTab && (
-                  <QueryEditor value={activeTab.sql} onChange={updateTabSql} onExecute={executeQuery} error={currentResult?.error} />
+                  <QueryEditor value={activeTab.sql} onChange={updateTabSql} onExecute={executeQuery} error={currentResult?.error} fontSize={fontSize} />
                 )}
               </div>
               <div className="flex-1 overflow-hidden">
-                <ResultsPanel result={currentResult} />
+                <ResultsPanel result={currentResult} fontSize={fontSize} />
               </div>
             </>
           ) : (
